@@ -1,16 +1,35 @@
 const express = require("express");
 const router = express.Router();
-const {getAllStudents,createStudent,updateStudentDetails,deleteStudent} = require("../controllers/admin/createStudent")
-const {getAllClasses,createClass,updateClassDetails,deleteClass} = require("../controllers/admin/createClass")
-const {getAllArms,createArm,updateClassArmDetails,deleteClassArm} = require("../controllers/admin/createArm")
+const {
+  getAllStudentsController,
+  createStudentController,
+  updateStudentDetailsController,
+  deleteStudentController,
+} = require("../controllers/studentController");
+const {
+  getAllClassesController,
+  createClassController,
+  updateClassDetailsController,
+  deleteClassController,
+} = require("../controllers/classController");
+const {
+  getAllArms,
+  createArm,
+  updateClassArmDetails,
+  deleteClassArm,
+} = require("../controllers/admin/createArm");
 
-router.route("/student/getall").get(getAllStudents);
-router.route("/student/create").post(createStudent);
-router.route("/student/:id").put(updateStudentDetails).delete(deleteStudent);
 
-router.route("/class/getall").get(getAllClasses);
-router.route("/class/create").post(createClass);
-router.route("/class/:id").put(updateClassDetails).delete(deleteClass);
+router.route("/student/getall").get(getAllStudentsController);
+router.route("/student/create").post(createStudentController);
+router
+  .route("/student/:id")
+  .put(updateStudentDetailsController)
+  .delete(deleteStudentController);
+
+router.route("/class/getall").get(getAllClassesController);
+router.route("/class/create").post(createClassController);
+router.route("/class/:id").put(updateClassDetailsController).delete(deleteClassController);
 
 router.route("/classarm/getall").get(getAllArms);
 router.route("/classarm/create").post(createArm);
