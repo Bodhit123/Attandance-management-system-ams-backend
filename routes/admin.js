@@ -8,16 +8,20 @@ const {
 } = require("../controllers/studentController");
 const {
   getAllClassesController,
+  getAllClassesASCController,
   createClassController,
   updateClassDetailsController,
   deleteClassController,
 } = require("../controllers/classController");
 const {
-  getAllArms,
-  createArm,
-  updateClassArmDetails,
-  deleteClassArm,
-} = require("../controllers/admin/createArm");
+  getAllArmsController,
+  getAllArmsByClassIdController,
+  getByIdController,
+  createArmController,
+  updateClassArmDetailsController,
+  deleteClassArmController,
+} = require("../controllers/classArmController");
+const { getAllArmsByClassId } = require("../services/classArmService");
 
 
 router.route("/student/getall").get(getAllStudentsController);
@@ -28,11 +32,21 @@ router
   .delete(deleteStudentController);
 
 router.route("/class/getall").get(getAllClassesController);
+router.route("/class/getallASC").get(getAllClassesASCController);
 router.route("/class/create").post(createClassController);
-router.route("/class/:id").put(updateClassDetailsController).delete(deleteClassController);
+router
+  .route("/class/:id")
+  .put(updateClassDetailsController)
+  .delete(deleteClassController);
 
-router.route("/classarm/getall").get(getAllArms);
-router.route("/classarm/create").post(createArm);
-router.route("/classarm/:id").put(updateClassArmDetails).delete(deleteClassArm);
+ 
+router.route("/classarm/getallByClassId").get(getAllArmsByClassId);
+router.route("/classarm/getall").get(getAllArmsController);
+router.route("/classarm/getById/:id").get(getByIdController);
+router.route("/classarm/create").post(createArmController);
+router
+  .route("/classarm/:id")
+  .put(updateClassArmDetailsController)
+  .delete(deleteClassArmController);
 
 module.exports = router;

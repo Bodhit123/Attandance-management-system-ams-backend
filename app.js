@@ -1,15 +1,17 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser")
-const admin = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
+const teacherRoutes = require("./routes/teacher");
+const authRoute = require("./routes/login");
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use("/api/admin",admin);
-
-
+app.use("/api/admin",adminRoutes);
+app.use("/api/teacher",teacherRoutes);
+app.use("/api",authRoute);
 
 
 module.exports = app;

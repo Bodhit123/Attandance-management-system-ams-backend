@@ -1,7 +1,13 @@
 const runQuery = require("../Utils/dbUtils"); 
 
 exports.getAllClasses = async () => {
-  const sql = 'SELECT * FROM tblclass';
+  const sql = 'SELECT * FROM tblclass ';
+  return await runQuery(sql, []);
+};
+
+
+exports.getAllClassesASC = async () => {
+  const sql = 'SELECT * FROM tblclass ORDER BY className ASC ';
   return await runQuery(sql, []);
 };
 

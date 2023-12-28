@@ -9,6 +9,15 @@ exports.getAllClassesController = async (req, res, next) => {
   }
 };
 
+exports.getAllClassesASCController = async (req, res, next) => {
+  try {
+    const results = await classService.getAllClasses();
+    res.status(200).send(results);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
 exports.createClassController = async (req, res, next) => {
   try {
     const result = await classService.createClass(req.body.className);

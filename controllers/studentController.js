@@ -4,7 +4,8 @@ const {
     updateStudentDetails,
     deleteStudent,
   } = require('../services/studentService');
-  
+
+ 
   exports.getAllStudentsController = async (req, res, next) => {
     try {
       const results = await getAllStudents();
@@ -16,10 +17,23 @@ const {
   };
   
   exports.createStudentController = async (req, res, next) => {
+    const studentData = req.body;
+  
     try {
-      const message = await createStudent(req.body);
-      res.status(200).send(message);
+      const result = await studentService.createStudent(studentData);
+  
+      if (result === "This Email Address Already Exists!") {
+        // Handle the case where the student email already exists
+        res.status(409).send(result); // 409 Conflict status code
+      } else if (result === "Student created successfully") {
+        // Student creation successful
+        res.status(200).send(result);
+      } else {
+        // Unexpected response from the service
+        res.status(500).send("Unexpected response from Service");
+      }
     } catch (error) {
+      console.error(error);
       res.status(500).send(error);
     }
   };
@@ -27,10 +41,16 @@ const {
   exports.updateStudentDetailsController = async (req, res, next) => {
     const studentID = req.params.id;
     try {
-      const message = await updateStudentDetails(studentID, req.body);
-      res.status(200).send(message);
+      const result = await updateStudentDetails(studentID, req.body);
+      if (result.success) {
+        // Update successful
+        res.status(200).send(result);
+      } else {
+        // student not found or not updated
+        res.status(404).send(result.message);
+      }
     } catch (error) {
-      res.status(500).send(error);
+      res.status(404).send("Failed to update student");
     }
   };
   
@@ -38,8 +58,17 @@ const {
     const studentID = req.params.id;
     try {
       const message = await deleteStudent(studentID);
+
+      if (message.success) {
+        //successful deletion
+        res.status(200).send(message);
+      } else {
+        //student not found or not deleted
+        res.status(404).send(result.message);
+      }
       res.status(200).send(message);
     } catch (error) {
+      // Service threw an error
       res.status(500).send(error);
     }
   };

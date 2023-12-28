@@ -1,4 +1,4 @@
-const runQuery = require("../Utils/dbUtils"); 
+const runQuery = require("../Utils/dbUtils");
 
 exports.getAllStudents = async () => {
   const sql =
@@ -7,41 +7,18 @@ exports.getAllStudents = async () => {
 };
 
 exports.createStudent = async (studentData) => {
-  const checkExistingQuery = 'SELECT * FROM tblstudents WHERE admissionNumber = ?';
+  const checkExistingQuery =
+    "SELECT * FROM tblstudents WHERE admissionNumber = ?";
   try {
-    const results = await runQuery(checkExistingQuery, [studentData.admissionNumber]);
+    const results = await runQuery(checkExistingQuery, [
+      studentData.admissionNumber,
+    ]);
     if (results.length > 0) {
-      return 'This Email Address Already Exists!';
+      return "This Email Address Already Exists!";
     } else {
       const insertQuery =
-        'INSERT INTO tblstudents (firstName, lastName, otherName, admissionNumber, password, classId, classArmId, dateCreated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-      await runQuery(
-        insertQuery,
-        [
-          studentData.firstName,
-          studentData.lastName,
-          studentData.otherName,
-          studentData.admissionNumber,
-          studentData.password,
-          studentData.classId,
-          studentData.classArmId,
-          studentData.dateCreated,
-        ]
-      );
-      return 'Student created successfully';
-    }
-  } catch (error) {
-    throw error;
-  }
-};
-
-exports.updateStudentDetails = async (studentID, studentData) => {
-  const updateQuery =
-    'UPDATE tblstudents SET firstName=?, lastName=?, otherName=?, admissionNumber=?, password=?, classId=?, classArmId=?, dateCreated=? WHERE Id=?';
-  try {
-    await runQuery(
-      updateQuery,
-      [
+        "INSERT INTO tblstudents (firstName, lastName, otherName, admissionNumber, password, classId, classArmId, dateCreated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+      await runQuery(insertQuery, [
         studentData.firstName,
         studentData.lastName,
         studentData.otherName,
@@ -50,26 +27,53 @@ exports.updateStudentDetails = async (studentID, studentData) => {
         studentData.classId,
         studentData.classArmId,
         studentData.dateCreated,
-        studentID,
-      ]
-    );
-    return 'Student updated successfully';
+      ]);
+      return "Student created successfully";
+    }
   } catch (error) {
-    throw error;
+    throw error.sqlMessage;
+  }
+};
+
+exports.updateStudentDetails = async (studentID, studentData) => {
+  const updateQuery =
+    "UPDATE tblstudents SET firstName=?, lastName=?, otherName=?, admissionNumber=?, password=?, classId=?, classArmId=?, dateCreated=? WHERE Id=?";
+  try {
+    const updateResult = await runQuery(updateQuery, [
+      studentData.firstName,
+      studentData.lastName,
+      studentData.otherName,
+      studentData.admissionNumber,
+      studentData.password,
+      studentData.classId,
+      studentData.classArmId,
+      studentData.dateCreated,
+      studentID,
+    ]);
+    if (updateResult.affectedRows > 0) {
+      return { success: true, message: "Student updated successfully" };
+    } else {
+      return { success: false, message: "Student not found or not updated" };
+    }
+  } catch (error) {
+    throw error.sqlMessage;
   }
 };
 
 exports.deleteStudent = async (studentID) => {
-  const deleteQuery = 'DELETE FROM tblstudents WHERE Id=?';
+  const deleteQuery = "DELETE FROM tblstudents WHERE Id=?";
   try {
-    await runQuery(deleteQuery, [studentID]);
-    return 'Student deleted successfully';
+    const result = await runQuery(deleteQuery, [studentID]);
+
+    if (deleteResult.affectedRows > 0) {
+      return { success: true, message: "Student deleted successfully" };
+    } else {
+      return { success: false, message: "Student not found or not deleted" };
+    }
   } catch (error) {
-    throw error;
+    throw new Error(`Error deleting student: ${error.message}`);
   }
 };
-
-
 
 // const { db } = require('../config/database');
 
