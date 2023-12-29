@@ -1,4 +1,4 @@
-const classArmService = require("../services/classArmService");
+const classArmService = require("../services/admin/classArmService");
 
 exports.getAllArmsController = async (req, res, next) => {
   try {

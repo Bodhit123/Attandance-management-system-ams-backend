@@ -21,7 +21,7 @@ const {
   updateClassArmDetailsController,
   deleteClassArmController,
 } = require("../controllers/classArmController");
-const { getAllArmsByClassId } = require("../services/classArmService");
+const { getAllArmsByClassId } = require("../services/admin/classArmService");
 
 
 router.route("/student/getall").get(getAllStudentsController);

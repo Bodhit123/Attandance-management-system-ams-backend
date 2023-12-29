@@ -1,4 +1,4 @@
-const runQuery = require("../Utils/dbUtils"); 
+const runQuery = require("../../Utils/dbUtils"); 
 
 exports.getAllClasses = async () => {
   const sql = 'SELECT * FROM tblclass ';

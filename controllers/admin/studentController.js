@@ -3,7 +3,7 @@ const {
     createStudent,
     updateStudentDetails,
     deleteStudent,
-  } = require('../services/studentService');
+  } = require('../services/admin/studentService');
 
  
   exports.getAllStudentsController = async (req, res, next) => {

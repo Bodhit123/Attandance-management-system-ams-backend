@@ -1,4 +1,4 @@
-const classService = require('../services/classService');
+const classService = require('../services/admin/classService');
 
 exports.getAllClassesController = async (req, res, next) => {
   try {
