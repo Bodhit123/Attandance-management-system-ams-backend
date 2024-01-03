@@ -1,8 +1,8 @@
-const runQuery = require("../Utils/dbUtils");
+const runQuery = require("../../Utils/dbUtils");
 
 const isActive = "0";
 
-exports.getAll = async (req, res, next) => {
+exports.getallSession = async (req, res) => {
   try {
     const sql = "SELECT * FROM tblsessionTerm";
     const results = await runQuery(sql, []);
@@ -12,7 +12,17 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.createSession = async (req,res,next) => {
+exports.getallTerms = async (req, res) => {
+  try {
+    const sql = "SELECT * FROM tblterm";
+    const results = await runQuery(sql, []);
+    if (results.length > 0) res.status(200).send(results);
+  } catch (err) {
+    res.status(500).send(error);
+  }
+};
+
+exports.createSession = async (req, res, next) => {
   try {
     const checkExistingQuery =
       "SELECT * FROM tblsessionTerm WHERE sessionName = ? AND termId = ?";
@@ -47,7 +57,7 @@ exports.updateSessionDetails = async (req, res, next) => {
       req.body.sessionName,
       req.body.termId,
       isActive,
-      req.params.id
+      req.params.id,
     ]);
 
     if (updateResult.affectedRows > 0) {
@@ -64,7 +74,7 @@ exports.updateSessionDetails = async (req, res, next) => {
   }
 };
 
-exports.deleteSession = async (req,res,next) => {
+exports.deleteSession = async (req, res, next) => {
   try {
     const deleteQuery = "DELETE FROM tblclassarms WHERE Id=?";
     const deleteResult = await runQuery(deleteQuery, [req.params.id]);

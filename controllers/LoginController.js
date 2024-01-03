@@ -1,4 +1,4 @@
-const loginService = require("../services/login");
+const loginService = require("../services/loginService");
 
 exports.loginController = async (req, res, next) => {
   const { userType } = req.params;

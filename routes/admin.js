@@ -5,14 +5,14 @@ const {
   createStudentController,
   updateStudentDetailsController,
   deleteStudentController,
-} = require("../controllers/studentController");
+} = require("../controllers/admin/studentController");
 const {
   getAllClassesController,
   getAllClassesASCController,
   createClassController,
   updateClassDetailsController,
   deleteClassController,
-} = require("../controllers/classController");
+} = require("../controllers/admin/classController");
 const {
   getAllArmsController,
   getAllArmsByClassIdController,
@@ -20,9 +20,20 @@ const {
   createArmController,
   updateClassArmDetailsController,
   deleteClassArmController,
-} = require("../controllers/classArmController");
-const { getAllArmsByClassId } = require("../services/admin/classArmService");
+} = require("../controllers/admin/classArmController");
 
+const {
+  getAllTeachersController,
+  createTeacherController,
+  deleteTeacherController,
+} = require("../controllers/admin/teacherController");
+const {
+  createSession,
+  deleteSession,
+  updateSessionDetails,
+  getallSession,
+  getallTerms
+} = require("../controllers/admin/session");
 
 router.route("/student/getall").get(getAllStudentsController);
 router.route("/student/create").post(createStudentController);
@@ -30,6 +41,10 @@ router
   .route("/student/:id")
   .put(updateStudentDetailsController)
   .delete(deleteStudentController);
+
+router.route("/teacher/getall").get(getAllTeachersController);
+router.route("/teacher/create").post(createTeacherController);
+router.route("/teacher/:id").delete(deleteTeacherController);
 
 router.route("/class/getall").get(getAllClassesController);
 router.route("/class/getallASC").get(getAllClassesASCController);
@@ -39,8 +54,7 @@ router
   .put(updateClassDetailsController)
   .delete(deleteClassController);
 
- 
-router.route("/classarm/getallByClassId").get(getAllArmsByClassId);
+router.route("/classarm/getallByClassId").get(getAllArmsByClassIdController);
 router.route("/classarm/getall").get(getAllArmsController);
 router.route("/classarm/getById/:id").get(getByIdController);
 router.route("/classarm/create").post(createArmController);
@@ -48,5 +62,12 @@ router
   .route("/classarm/:id")
   .put(updateClassArmDetailsController)
   .delete(deleteClassArmController);
+
+router.route("session/getall").get(getallSession);
+router.route("session/term/getall").get(getallTerms);
+router.route("session/create").post(createSession);
+router.route("session/:id").put(updateSessionDetails).delete(deleteSession);
+
+
 
 module.exports = router;
