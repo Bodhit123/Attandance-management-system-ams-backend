@@ -1,10 +1,24 @@
 const attendanceService = require("../services/attendanceService");
+const runQuery = require("../Utils/dbUtils");
 
+exports.getTotalAttendance = async (req, res) => {
+  try {
+    const totalAttendanceOfClass = await runQuery(
+      "select * from tblattendance where classId = ? and classArmId = ?",
+      [req.params.class, req.params.arm]
+    );
+    res.status(200).send(totalAttendanceOfClass);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 exports.subjectsByClassId = async (req, res, next) => {
   try {
-    const results = await attendanceService.getAllSubjects(req.params.id);
-    res.status(200).send(results);
+    const subjectsInClass = await attendanceService.getAllSubjects(
+      req.params.id
+    );
+    res.status(200).send(subjectsInClass);
   } catch (error) {
     res.status(500).send(error);
   }
@@ -31,7 +45,7 @@ exports.classAttendanceController = async (req, res, next) => {
   }
 };
 
-exports.studentAttendanceController = async (req, res ,next) => {
+exports.studentAttendanceController = async (req, res, next) => {
   try {
     const AttendanceResult = await attendanceService.viewStudentAttendance(
       req.body

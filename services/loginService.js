@@ -1,4 +1,4 @@
-const { runQuery } = require("../Utils/dbUtils");
+const runQuery  = require("../Utils/dbUtils");
 
 const loginService = async (data, userType) => {
   let sql;

@@ -1,4 +1,4 @@
-const { runQuery } = require("../Utils/dbUtils");
+const runQuery  = require("../Utils/dbUtils");
 
 exports.getAllSubjects = async (classId) => {
   const sql = "SELECT subjectName FROM tblsubjects WHERE classId = ? ";
@@ -146,7 +146,8 @@ exports.viewStudentAttendance = async (data) => {
     }
   };
   
-exports.fetchStudents = async (studentData) => {
+exports.fetchStudents = async (Data) => {
+  const {classId,classArmId} = Data;
   const sql = `SELECT
       tblclass.className,
       tblclassarms.classArmName,
@@ -167,7 +168,7 @@ exports.fetchStudents = async (studentData) => {
       tblclass.Id = ?
       AND tblclassarms.Id = ?;
     `;
-  return await runQuery(sql, [studentData.classId, studentData.classArmId]);
+  return await runQuery(sql, [classId,classArmId]);
 };
 
 
