@@ -12,6 +12,7 @@ const {
   createClassController,
   updateClassDetailsController,
   deleteClassController,
+  getallArmsByClass
 } = require("../controllers/admin/classController");
 const {
   getAllArmsController,
@@ -44,9 +45,10 @@ router
 
 router.route("/teacher/getall").get(getAllTeachersController);
 router.route("/teacher/create").post(createTeacherController);
-router.route("/teacher/:id").delete(deleteTeacherController);
+router.route("/teacher/:id/:armid").delete(deleteTeacherController);
 
 router.route("/class/getall").get(getAllClassesController);
+router.route("/class/arms/getall/:id").get(getallArmsByClass);
 router.route("/class/getallASC").get(getAllClassesASCController);
 router.route("/class/create").post(createClassController);
 router

@@ -21,38 +21,40 @@ INNER JOIN
   return await runQuery(sql, []);
 };
 
+
+
 exports.createTeacher = async (teacherData) => {
   const checkExistingQuery =
     "SELECT * FROM tblclassteacher WHERE emailAddress = ?";
   try {
     const results = await runQuery(checkExistingQuery, [
-      studentData.emailAddress,
+      teacherData.emailAddress,
     ]);
     if (results.length > 0) {
       return "This Email Address Already Exists!";
     } else {
       const insertQuery =
-        "INSERT INTO tblclassteacher (firstName, lastName, otherName, emailAddress, password,phoneNo, classId, classArmId, dateCreated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        "INSERT INTO tblclassteacher (firstName, lastName, emailAddress, password, phoneNo, classId, classArmId, dateCreated, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
       const result = await runQuery(insertQuery, [
         teacherData.firstName,
         teacherData.lastName,
-        teacherData.otherName,
         teacherData.emailAddress,
         teacherData.password,
         teacherData.phoneNo,
         teacherData.classId,
         teacherData.classArmId,
-        teacherData.dateCreated,
+        teacherData.dateCreated, // Use the current date or format as needed
+        teacherData.role || 'teacher', // Use the provided role or default to 'teacher'
       ]);
       if (result) {
         const query = await runQuery(
-          "update tblclassarms set isAssigned='1' where Id = ?",
+          "UPDATE tblclassarms SET isAssigned = '1' WHERE Id = ?",
           [teacherData.classArmId]
         );
         if (query) {
           return "Teacher created successfully";
         } else {
-          return "An error Occurred.";
+          return "An error occurred.";
         }
       }
     }
@@ -61,13 +63,22 @@ exports.createTeacher = async (teacherData) => {
   }
 };
 
-exports.deleteTeacher = async (teacherID) => {
+
+exports.deleteTeacher = async (teacherID,armId) => {
   const deleteQuery = "DELETE FROM tblclassteacher WHERE Id=?";
   try {
-    const result = await runQuery(deleteQuery, [teacherID]);
+    const deleteResult = await runQuery(deleteQuery, [teacherID]);
 
     if (deleteResult.affectedRows > 0) {
-      return { success: true, message: "Teacher deleted successfully" };
+      // Perform the second query to update tblclassarms
+      const updateQuery = "UPDATE tblclassarms SET isAssigned='0' WHERE Id=?";
+      const updateResult = await runQuery(updateQuery, [teacherID]);
+
+      if (updateResult.affectedRows > 0) {
+        return { success: true, message: "Teacher deleted successfully" };
+      } else {
+        return { success: false, message: "Error updating tblclassarms" };
+      }
     } else {
       return { success: false, message: "Teacher not found or not deleted" };
     }
@@ -75,88 +86,3 @@ exports.deleteTeacher = async (teacherID) => {
     throw new Error(`Error deleting teacher: ${error.message}`);
   }
 };
-
-// const { db } = require('../config/database');
-
-// const runQuery = (sql, params, callback) => {
-//   db.query(sql, params, (err, results) => {
-//     callback(err, results);
-//   });
-// };
-
-// exports.getAllStudents = (callback) => {
-//   const sql =
-//     "SELECT tblstudents.Id, tblclass.className, tblclassarms.classArmName, tblclassarms.Id AS classArmId, tblstudents.firstName, tblstudents.lastName, tblstudents.otherName, tblstudents.admissionNumber, tblstudents.dateCreated FROM tblstudents INNER JOIN tblclass ON tblclass.Id = tblstudents.classId INNER JOIN tblclassarms ON tblclassarms.Id = tblstudents.classArmId";
-//   runQuery(sql, [], callback);
-// };
-
-// exports.createStudent = (studentData, callback) => {
-//   const checkExistingQuery = 'SELECT * FROM tblstudents WHERE admissionNumber = ?';
-//   runQuery(checkExistingQuery, [studentData.admissionNumber], (err, results) => {
-//     if (err) {
-//       callback(err, null);
-//     } else if (results.length > 0) {
-//       callback(null, 'This Email Address Already Exists!');
-//     } else {
-//       const insertQuery =
-//         'INSERT INTO tblstudents (firstName, lastName, otherName, admissionNumber, password, classId, classArmId, dateCreated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-//       runQuery(
-//         insertQuery,
-//         [
-//           studentData.firstName,
-//           studentData.lastName,
-//           studentData.otherName,
-//           studentData.admissionNumber,
-//           studentData.password,
-//           studentData.classId,
-//           studentData.classArmId,
-//           studentData.dateCreated,
-//         ],
-//         (err, results) => {
-//           if (err) {
-//             callback(err,null);
-//           } else {
-//             callback(null, "Student created successfully");
-//           }
-//         }
-//       );
-//     }
-//   });
-// };
-
-// exports.updateStudentDetails = (studentID, studentData, callback) => {
-//   const updateQuery =
-//     'UPDATE tblstudents SET firstName=?, lastName=?, otherName=?, admissionNumber=?, password=?, classId=?, classArmId=?, dateCreated=? WHERE Id=?';
-//   runQuery(
-//     updateQuery,
-//     [
-//       studentData.firstName,
-//       studentData.lastName,
-//       studentData.otherName,
-//       studentData.admissionNumber,
-//       studentData.password,
-//       studentData.classId,
-//       studentData.classArmId,
-//       studentData.dateCreated,
-//       studentID,
-//     ],
-//     (err) => {
-//       if (err) {
-//         callback(err, null);
-//       } else {
-//         callback(null, 'Student updated successfully');
-//       }
-//     }
-//   );
-// };
-
-// exports.deleteStudent = (studentID, callback) => {
-//   const deleteQuery = "DELETE FROM tblstudents WHERE Id=?";
-//   runQuery(deleteQuery, [studentID], (err) => {
-//     if (err) {
-//       callback(err, null);
-//     } else {
-//       callback(null, "Student deleted successfully");
-//     }
-//   });
-// };

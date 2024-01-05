@@ -30,22 +30,22 @@ exports.createTeacherController = async (req, res) => {
   }
 };
 
+
 exports.deleteTeacherController = async (req, res) => {
   const teacherID = req.params.id;
-  try {
-    const message = await deleteStudent(teacherID);
+  const armId = req.params.armid;
 
-    if (message.success) {
-      //successful deletion
-      res.status(200).send(message);
+  try {
+    const result = await teacherService.deleteTeacher(teacherID,armId);
+
+    // Check the success property in the result and update the response accordingly
+    if (result.success) {
+      res.status(200).send(result);
     } else {
-      //student not found or not deleted
       res.status(404).send(result.message);
     }
-    res.status(200).send(message);
   } catch (error) {
     // Service threw an error
-    res.status(500).send(error);
+    res.status(500).send({ success: false, message: error.message });
   }
 };
-

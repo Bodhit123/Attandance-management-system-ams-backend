@@ -38,6 +38,7 @@ exports.classAttendanceController = async (req, res, next) => {
     const AttendanceResult = await attendanceService.viewClassAttendance(
       req.body
     );
+    console.log(req.body);
     res.status(200).send(AttendanceResult);
   } catch (err) {
     console.error(err);
@@ -87,10 +88,11 @@ exports.addStudentsAttendanceController = async (req, res, next) => {
 //check if attendance already taken for given period and add the attendance data (status-present or absent) into table if not
 exports.takeAttendanceController = async (req, res, next) => {
   try {
-    const { studentData, admissionNumbers } = req.body;
+    const { studentData, attendance } = req.body;
+    console.log(attendance);
     const result = await attendanceService.takeAttendance(
       studentData,
-      admissionNumbers
+      attendance
     );
     res.status(200).send(result.message);
   } catch (error) {

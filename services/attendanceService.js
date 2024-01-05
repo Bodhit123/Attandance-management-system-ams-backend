@@ -1,7 +1,7 @@
 const runQuery  = require("../Utils/dbUtils");
 
 exports.getAllSubjects = async (classId) => {
-  const sql = "SELECT subjectName FROM tblsubjects WHERE classId = ? ";
+  const sql = "SELECT * FROM tblsubjects WHERE classId = ? ";
   return await runQuery(sql, [classId]);
 };
 
@@ -13,15 +13,17 @@ exports.getall = async () => {
 
 exports.viewClassAttendance = async (data) => {
   const { classId, classArmId, subjectId, dateTaken } = data;
+  console.log(data);
   const sql =
-    "SELECT tblattendance.Id,tblstudents.firstName,tblstudents.lastName,tblstudents.otherName,tblstudents.admissionNumber,tblclass.className,tblclassarms.classArmName,tblsessionterm.sessionName,tblsessionterm.termId,tblterm.termName,tblattendance.status,tblattendance.dateTimeTaken FROM tblattendance INNER JOIN tblstudents ON tblattendance.admissionNo = tblstudents.admissionNumber INNER JOIN tblclass ON tblattendance.classId  tblclass.Id INNER JOIN tblclassarms ON tblattendance.classArmId = tblclassarms.Id INNER JOIN tblsessionterm ON tblattendance.sessionTermId = tblsessionterm.Id  INNER JOIN tblterm ON tblterm.Id = tblsessionterm.termId where tblattendance.dateTimeTaken = ? and tblattendance.classId = ? and tblattendance.classArmId = ? and tblattendance.subjectId = ? and tblattendance.dateTaken = ?";
-  return await db.query(sql, [classId, classArmId, subjectId, dateTaken]);
+    "SELECT tblattendance.Id,tblstudents.firstName,tblstudents.lastName,tblstudents.otherName,tblstudents.admissionNumber,tblclass.className,tblclassarms.classArmName,tblsessionterm.sessionName,tblsessionterm.termId,tblterm.termName,tblattendance.status,tblattendance.dateTimeTaken FROM tblattendance INNER JOIN tblstudents ON tblattendance.admissionNo = tblstudents.admissionNumber INNER JOIN tblclass ON tblattendance.classId = tblclass.Id INNER JOIN tblclassarms ON tblattendance.classArmId = tblclassarms.Id INNER JOIN tblsessionterm ON tblattendance.sessionTermId = tblsessionterm.Id  INNER JOIN tblterm ON tblterm.Id = tblsessionterm.termId where  tblattendance.classId = ? and tblattendance.classArmId = ? and tblattendance.subjectId = ? and tblattendance.dateTimeTaken = ?";
+  return await runQuery(sql, [classId, classArmId, subjectId, dateTaken]);
 };
 
 
 exports.viewStudentAttendance = async (data) => {
+  console.log(data.singleDate);
     const { type, admissionNumber, classId, classArmId, subjectId } = data;
-    if (type === 2) {
+    if (type === "2") {
       const singleDate = data.singleDate;
       const sql = `SELECT
       tblattendance.Id,
@@ -53,17 +55,17 @@ exports.viewStudentAttendance = async (data) => {
       AND tblattendance.admissionNo = ?
       AND tblattendance.classId = ?
       AND tblattendance.classArmId = ?
-      AND tblattendance.subjectId = ?
-      AND tblattendance.dateTaken = ?`;
+      AND tblattendance.subjectId = ?;`
   
       return await runQuery(sql, [
+        singleDate,
         admissionNumber,
         classId,
         classArmId,
         subjectId,
-        singleDate,
       ]);
-    } else if (type === 3) {
+    } else if (type === "3") {
+      console.log(data.toDate,data.fromDate)
       const { from, to } = data;
       const sql = `SELECT
       tblattendance.Id,
@@ -104,7 +106,7 @@ exports.viewStudentAttendance = async (data) => {
         classArmId,
         subjectId,
       ]);
-    } else {
+    } else if(type === "1"){
       const sql =
       `SELECT
       tblattendance.Id,
@@ -174,11 +176,13 @@ exports.fetchStudents = async (Data) => {
 
 //check if already record exist and add the list of students of class into tblattendance before taking attandance with status 0
 exports.addStudents = async (studentData) => {
-  const sessionTermId = await runQuery(
+  const sessionTermResults = await runQuery(
     "select Id from tblsessionterm where isActive ='1'",
     []
   );
-  const { classId, classArmId, subjectId, dateTaken, timeTaken, day } = studentData;
+  const sessionTermId = sessionTermResults.length > 0 ? sessionTermResults[0].Id : null;
+
+  const { classId, classArmId, subjectId, dateTaken, timeTaken} = studentData;
   const status = "0";
   const checkQuery =
     "select * from tblattendance  where classId = ? and classArmId = ? and subjectId = ? and dateTimeTaken = ? and TimeTaken = ? ";
@@ -206,7 +210,7 @@ exports.addStudents = async (studentData) => {
           await runQuery(
             "insert into tblattendance (admissionNo,classId,classArmId,sessionTermId,status,dateTimeTaken,subjectId,timeTaken) values (?,?,?,?,?,?,?,?) ",
             [
-              student.admissionNo,
+              student.admissionNumber,
               classId,
               classArmId,
               sessionTermId,
@@ -251,15 +255,18 @@ exports.takeAttendance = async (studentData, attendance) => {
     }
 
     // Update the status for the specified admission numbers
-    for (const admissionNo of attendance) {
+    for (const student of attendance) {
+
+      const statusToUpdate = student.status ? 1 : 0;
+
       const updateQuery = `
           UPDATE tblattendance
           SET status = ?
           WHERE admissionNo = ? AND classId = ? AND classArmId = ? AND subjectId = ? AND dateTimeTaken = ? AND TimeTaken = ?  
         `;
       const updateResult = await runQuery(updateQuery, [
-        attendance.status,
-        admissionNo,
+        statusToUpdate,
+        student.adNo,
         classId,
         classArmId,
         subjectId,
@@ -281,3 +288,5 @@ exports.takeAttendance = async (studentData, attendance) => {
     return { success: false, message: "Internal Server Error" };
   }
 };
+
+

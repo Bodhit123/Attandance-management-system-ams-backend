@@ -9,7 +9,6 @@ const {
   exports.getAllStudentsController = async (req, res, next) => {
     try {
       const results = await getAllStudents();
-      console.log(results)
       res.status(200).send(results);
     } catch (error) {
       res.status(500).send(error);
@@ -20,7 +19,7 @@ const {
     const studentData = req.body;
   
     try {
-      const result = await studentService.createStudent(studentData);
+      const result = await createStudent(studentData);
   
       if (result === "This Email Address Already Exists!") {
         // Handle the case where the student email already exists
@@ -59,7 +58,7 @@ const {
     try {
       const message = await deleteStudent(studentID);
 
-      if (message.success) {
+      if (message.success === true) {
         //successful deletion
         res.status(200).send(message);
       } else {

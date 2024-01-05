@@ -11,6 +11,11 @@ exports.getAllClassesASC = async () => {
   return await runQuery(sql, []);
 };
 
+exports.getallArmsByClass = async (id) => {
+  const sql = "SELECT * FROM tblclassarms where classId = ?";
+  return await runQuery(sql, [id]);
+};
+
 exports.createClass = async (className) => {
   const checkExistingQuery = 'SELECT * FROM tblclass WHERE className = ?';
   const results = await runQuery(checkExistingQuery, [className]);
