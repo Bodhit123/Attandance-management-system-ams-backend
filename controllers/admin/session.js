@@ -2,13 +2,13 @@ const runQuery = require("../../Utils/dbUtils");
 
 const isActive = "0";
 
-exports.getallSession = async (req, res) => {
+exports.getallSessionController = async (req, res) => {
   try {
-    const sql = "SELECT * FROM tblsessionTerm";
-    const results = await runQuery(sql, []);
-    if (results.length > 0) res.status(200).send(results);
+    const results = await runQuery("SELECT * FROM tblsessionterm", []);
+    console.log(results);
+    res.status(200).send(results); // <-- Use 'results' instead of 'data'
   } catch (err) {
-    res.status(500).send(error);
+    res.status(500).send(err); // <-- Use 'err' instead of 'error'
   }
 };
 

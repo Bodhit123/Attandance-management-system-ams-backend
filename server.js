@@ -1,6 +1,5 @@
 const app = require("./app");
 const db = require("./config/database");
-const path = require("path");
 
 
 db.createConnection((err, connection) => {

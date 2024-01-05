@@ -8,10 +8,10 @@ const {
     addStudentsAttendanceController,
     takeAttendanceController,
     subjectsByClassId,
-    getall,getTotalAttendance
+    getallAttendanceController,getTotalAttendance
   } = require("../controllers/AttendanceController");
   
-  router.route("/getall/attendance").get(getall);
+  router.route("/getall/attendance").get(getallAttendanceController);
   router.route("/getall/class/attendance/:class/:arm").get(getTotalAttendance);
   router.route("/subjects/:id").get(subjectsByClassId);
   router.route("/view/students").post(fetchStudentsController);

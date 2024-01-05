@@ -24,7 +24,7 @@ exports.subjectsByClassId = async (req, res, next) => {
   }
 };
 
-exports.getall = async (req, res, next) => {
+exports.getallAttendanceController = async (req, res, next) => {
   try {
     const results = await attendanceService.getall();
     res.status(200).send(results);

@@ -32,7 +32,7 @@ const {
   createSession,
   deleteSession,
   updateSessionDetails,
-  getallSession,
+  getallSessionController,
   getallTerms
 } = require("../controllers/admin/session");
 
@@ -65,10 +65,11 @@ router
   .put(updateClassArmDetailsController)
   .delete(deleteClassArmController);
 
-router.route("session/getall").get(getallSession);
-router.route("session/term/getall").get(getallTerms);
-router.route("session/create").post(createSession);
-router.route("session/:id").put(updateSessionDetails).delete(deleteSession);
+
+router.route("/session/getall").get(getallSessionController);
+router.route("/session/term/getall").get(getallTerms);
+router.route("/session/create").post(createSession);
+router.route("/session/:id").put(updateSessionDetails).delete(deleteSession);
 
 
 
