@@ -22,7 +22,7 @@ exports.getallArmsByClass = async (req, res, next) => {
 
 exports.getAllClassesASCController = async (req, res, next) => {
   try {
-    const results = await classService.getAllClasses();
+    const results = await classService.getAllClassesASC();
     res.status(200).send(results);
   } catch (error) {
     res.status(500).send(error);
