@@ -5,7 +5,6 @@ exports.getAllClasses = async () => {
   return await runQuery(sql, []);
 };
 
-
 exports.getAllClassesASC = async () => {
   const sql = 'SELECT * FROM tblclass ORDER BY className ASC ';
   return await runQuery(sql, []);

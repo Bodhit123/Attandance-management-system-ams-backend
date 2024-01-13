@@ -15,8 +15,8 @@ const {
   getallArmsByClass
 } = require("../controllers/admin/classController");
 const {
-  getAllArmsController,
-  getAllArmsByClassIdController,
+  AllArmsController,
+  ExistingArmsByDivisionController,
   getByIdController,
   createArmController,
   updateClassArmDetailsController,
@@ -56,8 +56,8 @@ router
   .put(updateClassDetailsController)
   .delete(deleteClassController);
 
-router.route("/classarm/getallByClassId").get(getAllArmsByClassIdController);
-router.route("/classarm/getall").get(getAllArmsController);
+router.route("/classarm/getall").get(AllArmsController);
+router.route("/classarm/getallByClassId").get(ExistingArmsByDivisionController);
 router.route("/classarm/getById/:id").get(getByIdController);
 router.route("/classarm/create").post(createArmController);
 router

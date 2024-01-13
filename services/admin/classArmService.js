@@ -5,7 +5,7 @@ exports.getAllArms = async () => {
   return await runQuery(sql, []);
 };
 
-exports.getAllArmsByClassId = async () => {
+exports.getExistingArms_By_division = async () => {
   const sql = `SELECT tblclassarms.Id,tblclassarms.isAssigned,tblclass.className,tblclassarms.classArmName 
   FROM tblclassarms
   INNER JOIN tblclass ON tblclass.Id = tblclassarms.classId`;

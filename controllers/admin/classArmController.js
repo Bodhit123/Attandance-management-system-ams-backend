@@ -1,6 +1,6 @@
 const classArmService = require("../../services/admin/classArmService");
 
-exports.getAllArmsController = async (req, res, next) => {
+exports.AllArmsController = async (req, res, next) => {
   try {
     const results = await classArmService.getAllArms();
     res.status(200).send(results);
@@ -9,9 +9,9 @@ exports.getAllArmsController = async (req, res, next) => {
   }
 };
 
-exports.getAllArmsByClassIdController = async (req, res, next) => {
+exports.ExistingArmsByDivisionController = async (req, res, next) => {
   try {
-    const results = await classArmService.getAllArms();
+    const results = await classArmService.getExistingArms_By_division();
 
     if (!results || results.length === 0) {
       // Handle the case where no classArms are found
